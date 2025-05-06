@@ -34,22 +34,24 @@ if __name__ == "__main__":
 
 
 
-    url = "jdbc:postgresql://hive-postgresql.hive-dp.cluster.local:5432/hive"
+    url = "jdbc:postgresql://hive-postgresql.hive-dp.svc.cluster.local:5432/hive"
     properties = {
         "user": "hive",
         "password": "hive",
         "driver": "org.postgresql.Driver"
     }
     table = "GLOBAL_PRIVS"
+    query = '(SELECT * FROM "GLOBAL_PRIVS") as result'
 
     df_pg = spark.read \
         .format("jdbc") \
-        .option("url", url) \
-        .option("dbtable", table) \
-        .option("user", properties["user"]) \
-        .option("password", properties["password"]) \
-        .option("driver", properties["driver"]) \
+        .option("url", "jdbc:postgresql://hive-postgresql.hive-dp.svc.cluster.local:5432/hive") \
+        .option("dbtable", query) \
+        .option("user", "hive") \
+        .option("password", "hive") \
+        .option("driver", "org.postgresql.Driver") \
         .load()
+    
 
     print("++ show db result")
     print("################################################")
