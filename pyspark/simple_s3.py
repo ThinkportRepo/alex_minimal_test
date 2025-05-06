@@ -27,6 +27,15 @@ if __name__ == "__main__":
     sc=spark.sparkContext
 
     sc.setLogLevel('WARN')
+    hadoop_conf = spark._jsc.hadoopConfiguration()
+    hadoop_conf.set("fs.s3a.endpoint", "s3.k8s.local.parcit:6669")
+    hadoop_conf.set("fs.s3a.access.key", "95JR8A8M73NTVMN2R2JM")
+    hadoop_conf.set("fs.s3a.secret.key", "2Ft7TszVmk739iNuPtngpNablGv5PvO1pKdjxqdJ")
+    hadoop_conf.set("fs.s3a.path.style.access", "true")
+    hadoop_conf.set("fs.s3a.connection.ssl.enabled", "false")
+    hadoop_conf.set("fs.s3.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+    hadoop_conf.set("fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider")
+    hadoop_conf.set("fs.s3a.connection.ssl.enabled", "false")
     
     print("-----------------------------------------------------")
     print("Spark App starting ...")
