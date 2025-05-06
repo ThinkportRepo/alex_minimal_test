@@ -107,13 +107,25 @@ if __name__ == "__main__":
      ).show(truncate=False)
 
 
-    # Iceberg{self.catalog}
+    print("++ check and create if not exist iceberg schema in hive catalog")
+    print("################################################")
+    spark.sql(f"CREATE DATABASE IF NOT EXISTS iceberg.alextest LOCATION 's3a://test-alex/iceberg'")
     databases = spark.sql(f"SHOW DATABASES in iceberg").collect()
     database_names = [row['namespace'] for row in databases]
     print(database_names)
-            # Location is rather important for connection to metadata; without you can't append data to table
-           # db_stmt = f"CREATE DATABASE IF NOT EXISTS {self.catalog}.{self.schema} LOCATION 's3a://{self.schema.replace('_','-')}/'"
-           # self.spark.sql(db_stmt)
+    
+    print("++ write to iceberg")
+    print("################################################")
+    (result.writeTo("iceberg.alextest.icebergtest")
+            .option("spark.sql.parquet.compressionCodec", "snappy") 
+            .option("spark.sql.parquet.enableVectorizedReader", "true")  
+            .option("spark.sql.parquet.filterableStatistics", "true")
+            .option("spark.sql.parquet.filterableColumns", "join_hash")
+            .option("spark.sql.parquet.bloom-filter-enabled.column.join_hash", "true")
+            .create()
+     )
+
+
 
     print("-----------------------------------------------------")
     print("Spark App completed")
