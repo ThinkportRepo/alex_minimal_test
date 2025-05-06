@@ -90,18 +90,30 @@ if __name__ == "__main__":
     )
     result.show(truncate=False)
 
+    
+    print("++ write delta file to s3")
     print("################################################")
-    print("Write delta file to s3")
     result.write.mode("overwrite").format("delta").save("s3a://test-alex/delta")
 
+    
+    print("++ read delta file history from s3")
     print("################################################")
-    print("Read delta file history from s3")
     delta_table = DeltaTable.forPath(spark, "s3a://test-alex/delta")
+    
     # Select relevant columns from history
     (delta_table
         .history()
         .select("version", "timestamp", "operation", "userName", "operationParameters")
      ).show(truncate=False)
+
+
+    # Iceberg{self.catalog}
+    databases = spark.sql(f"SHOW DATABASES in iceberg").collect()
+    database_names = [row['namespace'] for row in databases]
+    print(database_names)
+            # Location is rather important for connection to metadata; without you can't append data to table
+           # db_stmt = f"CREATE DATABASE IF NOT EXISTS {self.catalog}.{self.schema} LOCATION 's3a://{self.schema.replace('_','-')}/'"
+           # self.spark.sql(db_stmt)
 
     print("-----------------------------------------------------")
     print("Spark App completed")
