@@ -116,15 +116,23 @@ if __name__ == "__main__":
     
     print("++ write to iceberg")
     print("################################################")
-    # (result.writeTo("iceberg.test_alex.sales")
-    #         .option("spark.sql.parquet.compressionCodec", "snappy") 
-    #         .option("spark.sql.parquet.enableVectorizedReader", "true")  
-    #         .option("spark.sql.parquet.filterableStatistics", "true")
-    #         .option("spark.sql.parquet.filterableColumns", "join_hash")
-    #         .option("spark.sql.parquet.bloom-filter-enabled.column.join_hash", "true")
-    #         .create()
-    #  )
-    
+    if spark.catalog.tableExists("iceberg.test_alex.sales"):
+        result.writeTo("iceberg.test_alex.sales") \
+            .option("spark.sql.parquet.compressionCodec", "snappy") \
+            .option("spark.sql.parquet.enableVectorizedReader", "true") \
+            .option("spark.sql.parquet.filterableStatistics", "true") \
+            .option("spark.sql.parquet.filterableColumns", "join_hash") \
+            .option("spark.sql.parquet.bloom-filter-enabled.column.join_hash", "true") \
+            .append()
+    else:
+        result.writeTo("iceberg.test_alex.sales") \
+            .option("spark.sql.parquet.compressionCodec", "snappy") \
+            .option("spark.sql.parquet.enableVectorizedReader", "true") \
+            .option("spark.sql.parquet.filterableStatistics", "true") \
+            .option("spark.sql.parquet.filterableColumns", "join_hash") \
+            .option("spark.sql.parquet.bloom-filter-enabled.column.join_hash", "true") \
+            .create()
+        
     print("++ write from iceberg")
     print("################################################")
     spark.read.format("iceberg").load("iceberg.test_alex.sales.history").show(truncate=False)
