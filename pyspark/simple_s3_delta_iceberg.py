@@ -124,6 +124,11 @@ if __name__ == "__main__":
             .option("spark.sql.parquet.bloom-filter-enabled.column.join_hash", "true")
             .create()
      )
+    
+    print("++ write from iceberg")
+    print("################################################")
+    spark.read.format("iceberg").load("iceberg.test_alex.sales.history").show(truncate=False)
+
 
 
 
