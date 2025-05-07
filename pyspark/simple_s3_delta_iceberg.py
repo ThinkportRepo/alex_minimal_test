@@ -109,14 +109,14 @@ if __name__ == "__main__":
 
     print("++ check and create if not exist iceberg schema in hive catalog")
     print("################################################")
-    spark.sql(f"CREATE DATABASE IF NOT EXISTS iceberg.alextest LOCATION 's3a://test-alex/iceberg'")
+    #spark.sql(f"CREATE DATABASE IF NOT EXISTS iceberg.alextest LOCATION 's3a://test-alex/iceberg'")
     databases = spark.sql(f"SHOW DATABASES in iceberg").collect()
     database_names = [row['namespace'] for row in databases]
     print(database_names)
     
     print("++ write to iceberg")
     print("################################################")
-    (result.writeTo("iceberg.alextest.icebergtest")
+    (result.writeTo("iceberg.test_alex.sales")
             .option("spark.sql.parquet.compressionCodec", "snappy") 
             .option("spark.sql.parquet.enableVectorizedReader", "true")  
             .option("spark.sql.parquet.filterableStatistics", "true")
